@@ -1,4 +1,4 @@
-# 🌳 CryptoShield Merkle Engine
+#  CryptoShield Merkle Engine
 
 > A high-fidelity, interactive cryptographic audit dashboard and terminal sync emulator demonstrating how Merkle Trees verify data integrity in distributed networks (IPFS/Blockchain).
 
@@ -8,7 +8,7 @@
 
 ---
 
-## 📖 Overview
+##  Overview
 
 **CryptoShield Merkle Engine** converts abstract cryptographic hashing and dataset proofs into a visual, hands-on learning experience. The project bridges a **sleek graphical workspace** with an **interactive terminal command shell**, keeping both interfaces 100% synchronized in real-time. 
 
@@ -16,7 +16,7 @@ Users can upload files, retrieve IPFS Content Identifiers (CIDs), generate Merkl
 
 ---
 
-## 🌟 Key Features
+##  Key Features
 
 *   **Interactive Cryptographic Graph**: Dynamic bottom-up layout engine generating custom node networks in SVG. Includes drag-and-drop pan/zoom controls and detail cards showing full hex hashes and child sources.
 *   **Bi-Directional Terminal Sync Emulator**: A developer console mirroring the CLI behavior of `simulation.js`. Typing commands (e.g. `role server`, `build`) controls the GUI, and clicking buttons in the UI echoes outputs to the shell.
@@ -27,7 +27,7 @@ Users can upload files, retrieve IPFS Content Identifiers (CIDs), generate Merkl
 
 ---
 
-## ⚙️ Architecture Flow
+## Architecture Flow
 
 ```mermaid
 graph TD
@@ -44,7 +44,7 @@ graph TD
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 *   **Core**: HTML5 Semantic Markup & Vanilla CSS3 Custom Themes (Cyberpunk/Dark Mode)
 *   **Frontend Logic**: Vanilla ES6 JavaScript (No bulky client frameworks, loads instantly)
@@ -53,7 +53,7 @@ graph TD
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### 1. Prerequisites
 Ensure you have [Node.js](https://nodejs.org/) installed (v16+ recommended).
@@ -75,7 +75,7 @@ The server will boot and run on **[http://localhost:3000](http://localhost:3000)
 
 ---
 
-## ⌨️ Interactive Shell Command Reference
+##  Interactive Shell Command Reference
 
 You can control the entire application directly by typing in the console at the bottom of the screen:
 
@@ -90,7 +90,7 @@ You can control the entire application directly by typing in the console at the 
 
 ---
 
-## ☁️ Deployment (Vercel)
+##  Deployment (Vercel)
 
 This repository includes a preconfigured `vercel.json` deployment script. You can deploy it to Vercel instantly.
 
