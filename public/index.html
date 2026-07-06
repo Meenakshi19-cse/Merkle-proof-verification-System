@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoShield: Merkle Tree Proof Visualizer</title>
+  <!-- Google Fonts for premium tech feel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Dashboard Header -->
+    <header class="dashboard-header">
+      <div class="logo-area">
+        <span class="pulse-indicator"></span>
+        <h1>CRYPTOSHIELD <span class="accent-text">MERKLE ENGINE v1.0</span></h1>
+      </div>
+      <div class="system-status">
+        <div class="status-badge" id="api-status">
+          <span class="dot"></span> Backend API: <span class="status-text">Checking...</span>
+        </div>
+        <div class="status-badge" id="pinata-status">
+          <span class="dot"></span> Pinata IPFS: <span class="status-text">Connected</span>
+        </div>
+        <div class="status-badge root-hash-badge">
+          Root: <span id="current-root-display" title="No Root Computed">None</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Grid Workspace -->
+    <main class="dashboard-grid">
+      
+      <!-- Left Column: Controls & Configuration -->
+      <section class="panel-card control-panel">
+        <div class="tab-headers">
+          <button class="tab-btn active" data-tab="server">
+            <span class="icon">📁</span> Server (Publisher)
+          </button>
+          <button class="tab-btn" data-tab="client">
+            <span class="icon">🔍</span> Client (Verifier)
+          </button>
+        </div>
+
+        <div class="tab-content">
+          
+          <!-- Server Tab: File uploading and tree creation -->
+          <div class="tab-pane active" id="server-tab">
+            <div class="panel-section">
+              <h3>1. Select Workspace Files</h3>
+              <p class="section-desc">Click preloaded workspace files to add them to your upload queue, or upload custom files below.</p>
+              
+              <div class="local-files-grid" id="preloaded-files-container">
+                <div class="loading-placeholder">Scanning workspace...</div>
+              </div>
+            </div>
+
+            <div class="panel-section">
+              <h3>2. Custom File Upload</h3>
+              <div class="upload-zone" id="drag-drop-zone">
+                <span class="upload-icon">📤</span>
+                <p>Drag & drop files here or <label class="file-label">browse<input type="file" id="file-uploader" multiple style="display:none;"></label></p>
+                <span class="file-limits">Supports Images, Text, PDFs</span>
+              </div>
+            </div>
+
+            <div class="panel-section">
+              <h3>3. Upload Queue & IPFS Pinning</h3>
+              <div class="queue-container">
+                <div class="queue-header">
+                  <span>Queued Files (<span id="queue-count">0</span>)</span>
+                  <button class="clear-btn" id="clear-queue-btn">Clear Queue</button>
+                </div>
+                <div class="queue-list" id="upload-queue-list">
+                  <div class="empty-queue-msg">Queue is empty. Select files above to start.</div>
+                </div>
+              </div>
+
+              <div class="upload-options">
+                <label class="toggle-container">
+                  <input type="checkbox" id="live-ipfs-toggle">
+                  <span class="slider"></span>
+                  <span class="toggle-label">Live IPFS Pinning (Pinata Cloud)</span>
+                </label>
+              </div>
+
+              <button class="primary-btn btn-green disabled" id="upload-queue-btn">
+                <span>⚡</span> Upload and Pin Queue
+              </button>
+            </div>
+
+            <div class="panel-section section-action border-top">
+              <h3>4. Generate Cryptographic Tree</h3>
+              <p class="section-desc">Hashes the IPFS CIDs and builds the Merkle Tree, securing the dataset integrity.</p>
+              <button class="primary-btn btn-cyan disabled" id="build-tree-btn">
+                <span>🌳</span> Generate Merkle Tree
+              </button>
+            </div>
+          </div>
+
+          <!-- Client Tab: Verifying CIDs -->
+          <div class="tab-pane" id="client-tab">
+            <div class="panel-section">
+              <h3>Verify Block Content</h3>
+              <p class="section-desc">Enter an IPFS Content Identifier (CID) to audit its existence and cryptographic path within the current Merkle Tree.</p>
+              
+              <div class="input-group">
+                <label for="verification-cid-input">IPFS CID</label>
+                <div class="input-wrapper">
+                  <input type="text" id="verification-cid-input" placeholder="Enter Qm... CID or click a leaf from the right">
+                  <button class="paste-btn" id="autofill-btn" title="Autofill last generated CID">📋</button>
+                </div>
+              </div>
+
+              <div class="quick-cids-section">
+                <h4>Quick Select (CIDs in Tree)</h4>
+                <div class="quick-cids-list" id="quick-cids-container">
+                  <div class="empty-msg">No Merkle root loaded. Generate a tree first.</div>
+                </div>
+              </div>
+
+              <button class="primary-btn btn-blue" id="verify-cid-btn">
+                <span>🔒</span> Perform Integrity Audit
+              </button>
+            </div>
+
+            <div class="panel-section verification-result-card" id="verification-result-card">
+              <div class="card-header">
+                <h4>Audit Report</h4>
+                <span class="badge" id="audit-badge">Awaiting Input</span>
+              </div>
+              <div class="card-body">
+                <div class="report-row">
+                  <span class="label">Target CID:</span>
+                  <span class="value monospace scrollable" id="report-cid">-</span>
+                </div>
+                <div class="report-row">
+                  <span class="label">Leaf Hash:</span>
+                  <span class="value monospace scrollable" id="report-leaf-hash">-</span>
+                </div>
+                <div class="report-row">
+                  <span class="label">Status:</span>
+                  <span class="value" id="report-status">Awaiting Verification...</span>
+                </div>
+                
+                <div class="proof-steps-container">
+                  <h5>Audit Trail (Merkle Sibling Proofs)</h5>
+                  <div class="proof-steps" id="proof-steps-list">
+                    <div class="empty-proof">Audit has not run yet.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Right Column: Interactive Merkle Tree Visualizer -->
+      <section class="panel-card visual-panel">
+        <div class="panel-header">
+          <h2>🌳 Merkle Tree Cryptographic Graph</h2>
+          <div class="visualizer-controls">
+            <button class="control-icon-btn" id="zoom-in-btn" title="Zoom In">+</button>
+            <button class="control-icon-btn" id="zoom-out-btn" title="Zoom Out">-</button>
+            <button class="control-icon-btn" id="reset-view-btn" title="Reset View">⟲</button>
+          </div>
+        </div>
+        <div class="visualizer-container" id="tree-container">
+          <svg id="tree-svg" width="100%" height="100%"></svg>
+          <div class="svg-instructions">
+            <span>💡 <b>Interactive</b>: Hover nodes for hashes. Green/Cyan path indicates audited proof validation.</span>
+          </div>
+          <!-- Node Tooltip Card -->
+          <div class="node-tooltip" id="node-tooltip">
+            <h4 id="tooltip-node-title">Merkle Node</h4>
+            <div class="tooltip-detail">
+              <span class="lbl">Hash:</span>
+              <span class="val monospace" id="tooltip-node-hash">abcdef...</span>
+            </div>
+            <div class="tooltip-detail" id="tooltip-child-container">
+              <span class="lbl">Children:</span>
+              <span class="val monospace" id="tooltip-node-children">...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Panel: Interactive Terminal Console Sync -->
+    <section class="panel-card console-panel">
+      <div class="console-header">
+        <div class="title-with-pulse">
+          <span class="console-indicator"></span>
+          <h2>🖥️ Merkle Simulation Shell</h2>
+        </div>
+        <div class="console-actions">
+          <button class="console-tab-btn active">Terminal Emulator</button>
+          <button class="clear-console-btn" id="clear-console-btn">Clear Logs</button>
+        </div>
+      </div>
+      <div class="console-body" id="terminal-body">
+        <div class="terminal-line system-line">CryptoShield Shell [Version 1.0.0]</div>
+        <div class="terminal-line system-line">(c) 2026 CryptoShield Corporation. All rights reserved.</div>
+        <div class="terminal-line welcome-line">Type 'help' to see available shell commands. Ready for authentication...</div>
+        <div class="terminal-line prompt-line">Login as Server or Client? <span class="typed-text"></span><span class="terminal-cursor"></span></div>
+      </div>
+      <div class="console-input-area">
+        <span class="console-prompt">merkle-shell &gt;</span>
+        <input type="text" id="terminal-input" placeholder="Type a command (e.g. 'help', 'role server', 'build')..." autocomplete="off">
+      </div>
+    </section>
+
+  </div>
+
+  <script src="terminal.js"></script>
+  <script src="tree.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

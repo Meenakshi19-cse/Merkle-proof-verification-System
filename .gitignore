@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Local Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Temporary Uploads & Data
+temp_uploads/
+merkle_data.json
+
+# IDE / System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
